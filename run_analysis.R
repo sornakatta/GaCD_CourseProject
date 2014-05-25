@@ -27,7 +27,7 @@ CombDataSet <- cbind(CombActivity,CombLabels,CombSet)
 
 # Extracting column names from features.txt and attaching them to data set created
 FeatNames <- read.table("./features.txt",stringsAsFactors = F)
-colnames(CombDataSet) <- FeatNames[,2]
+colnames(CombDataSet) <- c("subject", "activity.labels",FeatNames[,2])
 
 # Create a new data set that only contains measurements of mean and standard deviation
 FinalDS <- CombDataSet[grep("mean\\(\\)|std\\(\\)",names(CombDataSet))]
@@ -67,10 +67,10 @@ FinalDS <-melt(FinalDS, id=c("subject", "activity.labels"))
 
 # Ordering the reshaped dataset in ascending order of subject no (1-30)
 # with ties being broken by activity label (1-6) 
-FinalDS  <- FinalDS[ order(Trial[,1], Trial[,2]),]
+FinalDS  <- FinalDS[ order(FinalDS[,1], FinalDS[,2]),]
 
-# Now get mean of all columns for each subject and each activity using dcast
-FinalCDS <- dcast(Trial, subject + activity.labels ~ variable, fun.aggregate=mean)
+# Now get average of all columns for each subject and each activity using dcast
+FinalCDS <- dcast(FinalDS, subject + activity.labels ~ variable, fun.aggregate=mean)
 
 # Writing file to directory
 setwd(Original)
